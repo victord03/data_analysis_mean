@@ -15,23 +15,27 @@ def main():
     sum_f_times_m = calc_sum(tuple(f_times_m))
     x_bar = round(sum_f_times_m / sum_of_frequencies, 1)
 
-    highest_value, this_range, median_result = calc_mode(frequencies, ranges, also_median=True)
-    # median_of_ranges = round((1/2 * sum_of_frequencies), 1)
-    print(
-        "\n\r\t\tHighest value \'"
-        + str(highest_value)
-        + "\' found at range \'"
-        + str(this_range)
-        + "\'. Median is located at interval \'"
-        + str(median_result)
-        + "\'\n"
-    )
+    highest_value, this_range, median_result = calc_mode(frequencies, ranges, also_median=False)
+
+    # median_for_overall_interval = round((1/2 * sum_of_frequencies), 1)
 
     # todo: one-liner for sigma ?
     # var = round(sqrt(calc_sum(tuple([(x-x_bar)**2 for x in m])) / sum_of_frequencies - 1), 1)
+
     sigma = calc_sigma(m, x_bar, sum_of_frequencies)
 
+
     # display
+    print_highest_value = False
+    if print_highest_value:
+        print(
+            "\n\r\t\tHighest value \'"
+            + str(highest_value)
+            + "\' found at range \'"
+            + str(this_range)
+            + "\'\n"
+        )
+
     printing = False
     if printing:
         print(
@@ -92,6 +96,9 @@ def calc_mode(frequencies: Tuple, ranges: Tuple, also_median=False):
         if int(value) > highest_value:
             index = i
             highest_value = int(value)
+        elif int(value == highest_value):
+            # todo: accounted for duplicates
+            pass
 
     median_value_encountered_at_index = None
 
