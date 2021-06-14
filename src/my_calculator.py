@@ -36,7 +36,7 @@ def main():
             + "\'\n"
         )
 
-    printing = False
+    printing = True
     if printing:
         print(
             f"\n\t{frequencies=}, {ranges=}"
@@ -130,9 +130,9 @@ def calc_sigma(m: List, x_bar: float, sum_frequencies: float) -> float:
     step_1 = [(x-x_bar)**2 for x in m]
     step_2 = [x*sum_frequencies for x in step_1]
 
-    denominator = calc_sum(tuple(step_2))
+    numerator = round(calc_sum(tuple(step_2)) / len(step_2), 1)
 
-    return round((sqrt(denominator / sum_frequencies - 1)), 1)
+    return round((sqrt(numerator / sum_frequencies - 1)), 1)
 
 if __name__ == "__main__":
     main()
