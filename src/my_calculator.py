@@ -15,8 +15,17 @@ def main():
     sum_f_times_m = calc_sum(tuple(f_times_m))
     x_bar = round(sum_f_times_m / sum_of_frequencies, 1)
 
-    highest_value, range, median_result = calc_mode(frequencies, ranges)
-    median_of_ranges = round((1/2 * sum_of_frequencies), 1)
+    highest_value, this_range, median_result = calc_mode(frequencies, ranges, also_median=True)
+    # median_of_ranges = round((1/2 * sum_of_frequencies), 1)
+    print(
+        "\n\r\t\tHighest value \'"
+        + str(highest_value)
+        + "\' found at range \'"
+        + str(this_range)
+        + "\'. Median is located at interval \'"
+        + str(median_result)
+        + "\'\n"
+    )
 
     # todo: one-liner for sigma ?
     # var = round(sqrt(calc_sum(tuple([(x-x_bar)**2 for x in m])) / sum_of_frequencies - 1), 1)
@@ -84,15 +93,21 @@ def calc_mode(frequencies: Tuple, ranges: Tuple, also_median=False):
             index = i
             highest_value = int(value)
 
-    median_result = None
+    median_value_encountered_at_index = None
 
     if also_median:
 
-        for index, values in enumerate(ranges):
-            if values[0] <= int((calc_sum(frequencies) / 2)) <= values[1]:
-                median_result = values, index
+        cf = calc_cumulative_frequency(list(frequencies))
 
-    return int(highest_value), ranges[index], median_result
+        for index, value in enumerate(cf):
+
+            if value > int(calc_sum(frequencies) / 2):
+                median_value_encountered_at_index = ranges[index-1]
+            elif value == int(calc_sum(frequencies)):
+                median_value_encountered_at_index = ranges[index]
+
+
+    return int(highest_value), ranges[index], median_value_encountered_at_index
 
 def calc_f_times_m(f: Tuple, m: List):
 
