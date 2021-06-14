@@ -5,42 +5,37 @@ from pysnooper import snoop
 def main():
 
     # data
-    frequencies = 3, 5, 9, 12, 8
-    ranges = (50, 59), (60, 69), (70, 79), (80, 89), (90, 100)
+    frequencies = 2, 1, 1, 2, 4, 3
+    ranges = (5, 9), (10, 14), (15, 19), (20, 24), (25, 29), (30, 35)
 
     # operations
     sum_of_frequencies = calc_sum(frequencies)
     m = calc_average_values(ranges)
     f_times_m = calc_f_times_m(frequencies, m)
     sum_f_times_m = calc_sum(tuple(f_times_m))
-    mean = round(sum_f_times_m / sum_of_frequencies, 1)
+    x_bar = round(sum_f_times_m / sum_of_frequencies, 1)
 
-    standard_deviation = calc_standard_deviation(frequencies, m, mean, sum_of_frequencies)
+    highest_value, range, median_result = calc_mode(frequencies, ranges)
+    median_of_ranges = round((1/2 * sum_of_frequencies), 1)
 
-    # cumulative_freq = calc_cumulative_frequency(list(frequencies))
-    # highest_occurrence = find_highest_value(frequencies)
-
+    # todo: one-liner for sigma ?
+    # var = round(sqrt(calc_sum(tuple([(x-x_bar)**2 for x in m])) / sum_of_frequencies - 1), 1)
+    sigma = calc_sigma(m, x_bar, sum_of_frequencies)
 
     # display
-    printing = True
+    printing = False
     if printing:
         print(
-            "\n\tNumber of class ranges: "
-            + str(len(frequencies))
-            + "\n\tSum of frequencies: "
+            f"\n\t{frequencies=}, {ranges=}"
+            + f"\n\t\tSUM(f) = "
             + str(sum_of_frequencies)
-            + "\n\tm: "
+            + f"\n\n\t\tMedian value per interval (m) : "
             + str(m)
-            + "\n\tf times m: "
-            + str(f_times_m)
-            + "\n\tsum_of_frequencies of (f times m): "
-            + str(sum_f_times_m)
-            + "\n\tmean: "
-            + str(mean)
-            + "\n\tstandard deviation: "
-            + str(standard_deviation)
+            + f"\n\n\t\tx(bar) = SUM(f * m) / SUM(f) = "
+            + str(x_bar)
+            + f"\n\n\t\tsigma = "
+            + str(sigma)
         )
-
 
 # @snoop()
 def calc_sum(numbers: Tuple) -> float:
@@ -78,16 +73,26 @@ def calc_average_values(ranges: Tuple) -> List:
 
     return results_list
 
-def find_highest_value(values: Tuple) -> int:
+def calc_mode(frequencies: Tuple, ranges: Tuple, also_median=False):
 
     highest_value = 0
+    index = None
 
-    for value in values:
+    for i, value in enumerate(frequencies):
 
         if int(value) > highest_value:
+            index = i
             highest_value = int(value)
 
-    return int(highest_value)
+    median_result = None
+
+    if also_median:
+
+        for index, values in enumerate(ranges):
+            if values[0] <= int((calc_sum(frequencies) / 2)) <= values[1]:
+                median_result = values, index
+
+    return int(highest_value), ranges[index], median_result
 
 def calc_f_times_m(f: Tuple, m: List):
 
@@ -98,34 +103,14 @@ def calc_f_times_m(f: Tuple, m: List):
 
     return f_times_m
 
-def calc_m_minus_mean(m: List, mean: float) -> List:
+def calc_sigma(m: List, x_bar: float, sum_frequencies: float) -> float:
 
-    result = list()
+    step_1 = [(x-x_bar)**2 for x in m]
+    step_2 = [x*sum_frequencies for x in step_1]
 
-    for value in m:
-        result.append(round(value - mean, 1))
+    denominator = calc_sum(tuple(step_2))
 
-    return result
-
-def calc_f_times_m_minus_mean(f: Tuple, m_minus_mean: List) -> List:
-
-    result = list()
-
-    for index, value in enumerate(f):
-        result.append(round(value * m_minus_mean[index], 1))
-
-    return result
-
-def calc_standard_deviation(f: Tuple, m: List, x_bar: float, n: float) -> float:
-
-    list_of_m_minus_mean = calc_m_minus_mean(m, x_bar)
-    list_of_m_minus_mean_squared = [round(x**2, 1) for x in list_of_m_minus_mean]
-
-    list_of_f_times_m_minus_mean_squared = calc_f_times_m_minus_mean(f, list_of_m_minus_mean_squared)
-
-    sum_of_list_of_f_times_m_minus_mean_squared = calc_sum(tuple(list_of_f_times_m_minus_mean_squared))
-
-    return round(sqrt(sum_of_list_of_f_times_m_minus_mean_squared / n - 1), 1)
+    return round((sqrt(denominator / sum_frequencies - 1)), 1)
 
 if __name__ == "__main__":
     main()
