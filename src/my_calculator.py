@@ -64,7 +64,7 @@ def calc_cumulative_frequency(frequencies: List) -> list:
 
     i = 0
 
-    cumulative_values_list = list()
+    cumulative_values_list = []
 
     for frequency in frequencies:
         if i == 0:
@@ -116,7 +116,7 @@ def calc_mode(frequencies: Tuple, ranges: Tuple, also_median=False):
 
     return int(highest_value), ranges[index], median_value_encountered_at_index
 
-def calc_f_times_m(f: Tuple, m: List):
+def calc_f_times_m(f: Tuple, m: List) -> List:
 
     f_times_m = list()
 
